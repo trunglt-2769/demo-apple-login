@@ -1,0 +1,34 @@
+.btn {
+  width: max-content;
+  min-height: 40px;
+  margin-bottom: 20px;
+  padding: 4px 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  outline: none;
+  color: #fff;
+  background: #31bebb;
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+  -moz-transition: all 0.3s ease-out;
+  -ms-transition: all 0.3s ease-out;
+  -o-transition: all 0.3s ease-out;
+}
+
+.btn:hover {
+  background: #299c9a;
+}
+
+.btnGray {
+  background: #949494;
+}
+
+.btnGray:hover {
+  background: #747474;
+}
