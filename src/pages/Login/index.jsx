@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import AppleLogin from "react-apple-login";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
-import { useLocation } from "react-router";
 
 import cookie, { cookieNames } from "../../utils/cookie";
 import { setUser } from "./login.slice";
@@ -12,10 +11,7 @@ import styles from "./styles.module.css";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
   const history = useHistory();
-  const urlSearchParams = new URLSearchParams(location.search);
-  const params = Object.fromEntries(urlSearchParams.entries());
   const [nonce, setNonce] = useState("");
 
   useEffect(() => {
@@ -34,40 +30,16 @@ const Login = () => {
   const handleLoginSuccess = useCallback((data) => {
     cookie.set(cookieNames.teacher_session_id, data.teacher_session_id, 365);
     if (data.manager_session_id) cookie.set(cookieNames.manager_session_id, data.manager_session_id, 365);
-    if (params.redirect_to) {
-      switch (params.redirect_to) {
-        case "dlp": {
-          window.location.href = `${process.env.REACT_APP_DLP_URL}`;
-          return;
-        }
-        case "gear": {
-          window.location.href = `${process.env.REACT_APP_GEAR_URL}`;
-          return;
-        }
-        default: {
-          if (data.manager_session_id) {
-            window.location.href = `${process.env.REACT_APP_MANAGER_URL}`;
-            return;
-          }
-          alert("アカウントにManagerアプリへのアクセスが許可されていません");
-          dispatch(setUser(data.teacher));
-          history.push(path.home);
-          return;
-        }
-      }
-    } else {
-      dispatch(setUser(data.teacher));
-      history.push(path.home);
-    } // eslint-disable-next-line
+    dispatch(setUser(data.teacher));
+    history.push(path.home);
   }, []);
 
   const handleLoginApple = useCallback(async (response) => {
-    console.log(response);
     try {
-      if (response.idToken) {
+      if (response.authorization.id_token) {
         const options = {
           method: "POST",
-          body: JSON.stringify({ access_token: response.idToken }),
+          body: JSON.stringify({ access_token: response.authorization.id_token }),
           headers: {
             "Content-Type": "application/json",
           },
